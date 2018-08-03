@@ -1,0 +1,46 @@
+# Reference Doc: http://tinkerpop.apache.org/docs/current/reference/
+
+host: 0.0.0.0
+port: 8182
+threadPoolWorker: {{ default .Env.THREAD_POOL_WORKER "1" }}
+gremlinPool: {{ default .Env.GREMLIN_POOL "0" }}
+scriptEvaluationTimeout: {{ default .Env.SCRIPT_EVALUATION_TIMEOUT "30000" }}
+serializedResponseTimeout: {{ default .Env.SERIALIZED_RESPONSE_TIMEOUT "30000" }}
+channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
+graphs: {
+  graph: conf/gremlin-server/janusgraph-cassandra-es-server.properties
+}
+plugins:
+  - janusgraph.imports
+scriptEngines: {
+  gremlin-groovy: {
+    imports: [java.lang.Math],
+    staticImports: [java.lang.Math.PI],
+    scripts: [{{ default .Env.GROOVY_SCRIPTS "scripts/empty-sample.groovy" }}]}}
+serializers:
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { serializeResultToString: true }}
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GryoLiteMessageSerializerV1d0, config: {ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV2d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+  - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
+processors:
+  - { className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: { sessionTimeout: 28800000 }}
+  - { className: org.apache.tinkerpop.gremlin.server.op.traversal.TraversalOpProcessor, config: { cacheExpirationTime: 600000, cacheMaxSize: 1000 }}
+metrics: {
+  consoleReporter: {enabled: {{ default .Env.CONSOLE_REPORTER_ENABLED "false" }}, interval: {{ default .Env.CONSOLE_REPORTER_INTERVAL "180000"}}},
+  csvReporter: {enabled: {{ default .Env.CSV_REPORTER_ENABLED "false" }}, interval: {{ default .Env.CSV_REPORTER_INTERVAL "180000" }}, fileName: {{ default .Env.CSV_REPORTER_FILE_NAME "/tmp/gremlin-server-metrics.csv" }}},
+  jmxReporter: {enabled: {{ default .Env.JMX_REPORTER_ENABLED "false" }}},
+  slf4jReporter: {enabled: {{ default .Env.SLF4J_REPORTER_ENABLED "false" }}, interval: {{ default .Env.SLF4J_REPORTER_INTERVAL "180000" }}},
+  gangliaReporter: {enabled: {{ default .Env.GANGLIA_REPORTER_ENABLED "false" }}, interval: {{ default .Env.GANGLIA_REPORTER_INTERVAL "180000" }}, addressingMode: {{ default .Env.GANGLIA_REPORTER_ADDRESSING_MODE "MULTICAST" }}},
+  graphiteReporter: {enabled: {{ default .Env.GRAPHITE_REPORTER_ENABLED "false" }}, interval: {{ default .Env.GRAPHITE_REPORTER_INTERVAL "180000" }}}}
+threadPoolBoss: {{ default .Env.THREAD_POOL_BOSS "1" }}
+maxInitialLineLength: {{ default .Env.MAX_INITIAL_LINE_LENGTH "4096" }}
+maxHeaderSize: {{ default .Env.MAX_HEADER_SIZE "8192" }}
+maxChunkSize: {{ default .Env.MAX_CHUNK_SIZE "8192" }}
+maxContentLength: {{ default .Env.MAX_CONTENT_LENGTH "65536" }}
+maxAccumulationBufferComponents: {{ default .Env.MAX_ACCUMULATION_BUFFER_COMPONENTS "1024" }}
+resultIterationBatchSize: {{ default .Env.RESULT_ITERATION_BATCH_SIZE "64" }}
+writeBufferLowWaterMark: {{ default .Env.WRITE_BUFFER_LOW_WATER_MARK "32768" }}
+writeBufferHighWaterMark: {{ default .Env.WRITE_BUFFER_HIGH_WATER_MARK "65536" }}
+ssl: { enabled: {{ default .Env.SSL_ENABLED "false" }} }
