@@ -1,0 +1,49 @@
+version: '3.7'
+services:
+  
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/shell/ || exit 1"]
+      interval: 1s
+      timeout: 10s
+      retries: 3
+  
+  
+  janus:
+    build:
+      context: ../../
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z -v localhost 8182 || exit 1"]
+      interval: 1s
+      timeout: 20s
+      retries: 20
+    environment:
+      GREMLIN_POOL: 8
+      THREAD_POOL_WORKER: 2
+      SCRIPT_EVALUATION_TIMEOUT: 0
+      SERIALIZED_RESPONSE_TIMEOUT: 60000
+      STORAGE_BACKEND: dynamodb
+      GROOVY_SCRIPTS: scripts/empty-sample.groovy
+      JAVA_OPTIONS: "-Xms32m -Xmx2048m"
+      MAX_CHUNK_SIZE: 4096000
+      MAX_CONTENT_LENGTH: 65536000
+      WRITE_BUFFER_HIGH_WATER_MARK: 131072
+      CACHE_DB_CACHE_CLEAN_WAIT: 20
+      CACHE_DB_CACHE_TIME: 180000
+      CACHE_DB_CACHE_SIZE: 0.25
+      INDEX_SEARCH_BACKEND: lucene
+      STORAGE_DYNAMODB_CLIENT_ENDPOINT: http://dynamodb-local:8000
+      STORAGE_DYNAMODB_CLIENT_CREDENTIALS_CLASS_NAME: com.amazonaws.auth.BasicAWSCredentials
+      STORAGE_DYNAMODB_CLIENT_CREDENTIALS_CONSTRUCTOR_ARGS: access,secret
+      STORAGE_DYNAMODB_STORES_EDGESTORE_READ_RATE: 1000
+      STORAGE_DYNAMODB_STORES_EDGESTORE_WRITE_RATE: 1000
+      STORAGE_DYNAMODB_STORES_GRAPHINDEX_READ_RATE: 1000
+      STORAGE_DYNAMODB_STORES_GRAPHINDEX_WRITE_RATE: 1000
+    ports:
+      - "8182:8182"
+    depends_on:
+      - dynamodb-local
+
