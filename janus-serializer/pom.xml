@@ -61,12 +61,34 @@
             <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
 						<goals>
 							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+            <!-- This has been added to override the default
+                maven-serufire-plugin version (2.12.4) that
+                has a bug with openjdk8 which prevent the
+                correct execution of the test phase
+             -->
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M1</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
 						</goals>
 					</execution>
 				</executions>
