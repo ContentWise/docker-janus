@@ -27,7 +27,7 @@ RUN wget -O /tmp/janus.zip "https://github.com/JanusGraph/janusgraph/releases/do
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 RUN mkdir -p /opt/janus/ext/janus-serializer /opt/janus/ext/dynamodb-janusgraph-storage-backend
-COPY --from=builder /usr/src/janus-serializer/target/janus-serializer.jar /opt/janus/ext/janus-serializer
+COPY --from=builder /usr/src/janus-serializer/target/janus-serializer.jar /opt/janus/ext/janus-serializer.jar
 COPY --from=builder \
     /usr/src/dynamodb-janusgraph-storage-backend/target/dynamodb-janusgraph-storage-backend-1.2.0.jar \
     /usr/src/dynamodb-janusgraph-storage-backend/target/dependencies \
