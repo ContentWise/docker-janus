@@ -6,7 +6,7 @@ threadPoolWorker: {{ default .Env.THREAD_POOL_WORKER "1" }}
 gremlinPool: {{ default .Env.GREMLIN_POOL "0" }}
 scriptEvaluationTimeout: {{ default .Env.SCRIPT_EVALUATION_TIMEOUT "30000" }}
 serializedResponseTimeout: {{ default .Env.SERIALIZED_RESPONSE_TIMEOUT "30000" }}
-channelizer: org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer
+channelizer: {{ default .Env.CHANNELIZER "org.apache.tinkerpop.gremlin.server.channel.WebSocketChannelizer" }}
 graphs: {
   graph: conf/gremlin-server/janusgraph-{{ default .Env.STORAGE_BACKEND "cassandra" }}.properties
 }
