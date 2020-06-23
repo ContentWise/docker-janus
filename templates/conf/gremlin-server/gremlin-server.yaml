@@ -25,8 +25,9 @@ serializers:
   - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerGremlinV2d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
   - { className: org.apache.tinkerpop.gremlin.driver.ser.GraphSONMessageSerializerV1d0, config: { ioRegistries: [org.janusgraph.graphdb.tinkerpop.JanusGraphIoRegistry] }}
 processors:
-  - { className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: { sessionTimeout: 28800000 }}
-  - { className: org.apache.tinkerpop.gremlin.server.op.traversal.TraversalOpProcessor, config: { cacheExpirationTime: 600000, cacheMaxSize: 1000 }}
+   - { className: org.apache.tinkerpop.gremlin.server.op.session.SessionOpProcessor, config: { sessionTimeout: 28800000, maxParameters: 32 }}
+   - { className: org.apache.tinkerpop.gremlin.server.op.traversal.TraversalOpProcessor, config: { cacheExpirationTime: 600000, cacheMaxSize: 1000 }}
+   - { className: org.apache.tinkerpop.gremlin.server.op.standard.StandardOpProcessor, config: { maxParameters: 32 }}
 metrics: {
   consoleReporter: {enabled: {{ default .Env.CONSOLE_REPORTER_ENABLED "false" }}, interval: {{ default .Env.CONSOLE_REPORTER_INTERVAL "180000"}}},
   csvReporter: {enabled: {{ default .Env.CSV_REPORTER_ENABLED "false" }}, interval: {{ default .Env.CSV_REPORTER_INTERVAL "180000" }}, fileName: {{ default .Env.CSV_REPORTER_FILE_NAME "/tmp/gremlin-server-metrics.csv" }}},
